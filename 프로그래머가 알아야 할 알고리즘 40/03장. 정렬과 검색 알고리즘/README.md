@@ -101,3 +101,52 @@ var1, var2 = var2, var1
                 c = c + 1
         return list
     ```
+## 5. 셸 정렬(Shell Sort)
+
+- 바로 인접한 이웃 대신 고정된 거리만큼 서로 떨어진 데이터 포인트끼리 묶어 이를 정렬
+    
+    ```python
+    def ShellSort(list):
+        distance = len(list) // 2
+        while distance > 0:
+            for i in range(distance, len(list)):
+                temp = list[i]
+                j = i
+                while j >= distance and list[j-distance] > temp:
+                    list[j] = list[j-distance]
+                    j = j - distance
+                list[j] = temp
+            distance = distance // 2
+        return list
+    ```
+    
+
+### 1. 셸 정렬의 성능 분석
+
+- 시간 복잡도 : O(N)
+
+## 6. 선택 정렬(Selection Sort)
+
+- 필요한 교환 횟수를 최소화한 버블 정렬의 개량 버전
+- 각 패스마다 가장 큰 값을 찾아내 맨 오른쪽으로 바로 이동
+    
+    ```python
+    def SelectionSort(list):
+        for fill_slot in range(len(list) - 1, 0, -1):
+            max_index = 0
+            for location in range(1, fill_slot + 1):
+                if list[location] > list[max_index]:
+                    max_index = location
+            list[fill_slot], list[max_index] = list[max_index], list[fill_slot]
+        return list
+    ```
+    
+
+### 1. 선택 정렬의 성능 분석
+
+- 시간 복잡도 : O(N^2)
+
+### 2. 정렬 알고리즘 선택하기
+
+- 데이터가 어느 정도 정렬되어 있음 → 삽입 정렬
+- 규모가 큰 데이터셋 → 병합 정렬
