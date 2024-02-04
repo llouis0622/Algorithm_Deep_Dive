@@ -101,6 +101,8 @@ var1, var2 = var2, var1
                 c = c + 1
         return list
     ```
+    
+
 ## 5. 셸 정렬(Shell Sort)
 
 - 바로 인접한 이웃 대신 고정된 거리만큼 서로 떨어진 데이터 포인트끼리 묶어 이를 정렬
@@ -150,3 +152,84 @@ var1, var2 = var2, var1
 
 - 데이터가 어느 정도 정렬되어 있음 → 삽입 정렬
 - 규모가 큰 데이터셋 → 병합 정렬
+
+# 2. 검색 알고리즘 이해하기
+
+## 1. 선형 검색(Linear Search)
+
+- 데이터를 하나씩 살펴보는 것 → 모든 데이터 조회
+- 다른 검색 전략이 요구하는 데이터 정렬 불필요
+    
+    ```python
+    def LinearSearch(list, item):
+        index = 0
+        found = False
+    
+        while index < len(list) and found is False:
+            if list[index] == item:
+                found = True
+            else:
+                index = index + 1
+        return found
+    ```
+    
+
+### 1. 선형 검색의 성능 분석
+
+- 시간 복잡도 : O(N)
+
+## 2. 이진 검색(Binary Search)
+
+- 전제 조건 : 데이터가 정렬되어 있어야 함
+- 반복적으로 검색 대상을 반으로 줄이면서 최저와 최고 인덱스를 갱신
+    
+    ```python
+    def BinarySearch(list, item):
+        first = 0
+        last = len(list) - 1
+        found False
+    
+        while first <= last and not found:
+            midpoint = (first + last) // 2
+            if list[midpoint] == item:
+                found = True
+            else:
+                if item < list[midpoint]:
+                    last = midpoint - 1
+                else:
+                    first = midpoint + 1
+        return found
+    ```
+    
+
+### 1. 이진 검색의 성능 분석
+
+- 시간 복잡도 : O(log N)
+
+## 3. 보간 검색(Interpolation Search)
+
+- 정렬된 배열 속에서 검색할 대상의 위치 추정
+- 조건에 부합하는 데이터가 있을 가능성이 높은 지점을 중간 지점으로 선택
+    
+    ```python
+    def IntPolsearch(list, x):
+        idx0 = 0
+        idxn = len(list) - 1
+        found = False
+    
+        while idx0 <= idxn and x >= list[idx0] and x <= list[idxn]:
+            mid idx0 + int((float(idxn - idx0) / (list[idxn] - list[idx0])) * (x - list[idx0]))
+            if list[mid] == x:
+                found = True
+                return found
+    
+            if list[mid] < x:
+                idx0 = mid + 1
+        return found
+    ```
+    
+
+### 1. 보간 검색의 성능 분석
+
+- 시간 복잡도 : O(N)
+- 최상의 시간 복잡도 : O(log(log N))
