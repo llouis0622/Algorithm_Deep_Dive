@@ -66,3 +66,56 @@
 - 전략 1 : 시간을 들여 최적해에 가까운 해를 찾으려 노력
 - 전략 2 : 알고리즘 오버헤드를 최소화
 - 전역적 최적해를 찾으려 노력하는 대신 알고리즘 오버헤드를 최소화하는 방식 선택
+
+# 3. 페이지랭크(PageRank) 알고리즘 이해하기
+
+- 사용자가 입력한 검색어의 맥락을 바탕으로 검색 결과의 중요도 수치화
+
+## 1. 페이지랭크 알고리즘 구현하기
+
+- 사용자가 입력한 검색어와 관련한 정보
+- 사용자가 입력한 검색어와는 상관없는 정보
+    
+    ```python
+    import numpy as np
+    import networkx as nx
+    import matplotlib.pyplot as plt
+    %matplotlib inline
+    
+    myWeb = nx.DiGraph()
+    myPages = range(1, 5)
+    
+    connections = [(1, 3), (2, 1), (2, 3), (3, 1), (3, 2), (3, 4), (4, 5), (5, 1), (5, 4)]
+    myWeb.add_nodes_from(myPages)
+    myWeb.add_edges_from(connections)
+    
+    pos = nx.shell_layout(myWeb)
+    nx.draw(myWeb, pos, arrows=True, with_labels=True)
+    plt.show()
+    
+    def createPageRank(aGraph):
+        nodes_set = len(aGraph)
+        M = nx.to_numpy_matrix(aGraph)
+        outwards = np.squeeze(np.asarray(np.sum(M, axis=1)))
+        prob_outwards = np.array([1.0 / count if count > 0 else 0.0 for count in outwards])
+        G = np.asarray(np.multiply(M.T, prob_outwards))
+        p = np.ones(nodes_set) / float(nodes_set)
+        if np.min(np.sum(G, axis=0)) < 1.0:
+            print('경고: 전이 확률 합의 최솟값이 1보다 작습니다.')
+        return G, p
+    
+    G, p = createPageRank(myWeb)
+    print(G)
+    ```
+    
+
+# 4. 선형 계획법(Linear Programming) 이해하기
+
+- 어떠한 제약 조건이 주어졌을 때 변수를 최소화하거나 최대화하는 현실 세계의 문제를 푸는 데 사용
+
+## 1. 선형 계획법 문제 정의하기
+
+- 문제를 방정식의 집합으로 표현 가능
+- 방정식에 사용되는 변수 사이에 일차 방정식 성립
+- 목적 함수 정의하기 : 다른 변수들의 선형 함수로 표현
+- 제약 조건 설정하기 : 현실 세계의 문제에서 무언가를 최소화하거나 최대화할 때 제약 조건 설정
