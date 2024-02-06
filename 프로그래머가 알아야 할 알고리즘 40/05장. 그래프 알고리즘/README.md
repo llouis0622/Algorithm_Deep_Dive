@@ -133,3 +133,45 @@ nx.closeness_centrality(G)
 centrality = nx.eigenvector_centrality(G)
 sorted((v, '{:0.2f}'.format(c)) for v, c in centrality.items())
 ```
+
+# 3. 그래프 순회(Graph Traversal) 이해하기
+
+- 특정한 방식을 따라 그래프에 있는 모든 버텍스와 엣지를 확인하는 과정
+- 모든 버텍스와 엣지를 단 한 번만 방문
+
+## 1. 너비 우선 검색(Breadth-First Search, BFS)
+
+- 그래프 내에 레이어 또는 레벨로 구성된 이웃 그룹들이 있을 때 적용할 수 있는 가장 효율적인 그래프 순회 전략
+- 루트 버텍스에서 시작하여 그 인근 레이어에 있는 이웃 버텍스들을 탐색 → 이웃들에 대한 확인이 끝나면 다음 레이어로 이동하여 검색 과정 반복
+
+### 1. 초기 설정
+
+- `visited`  : 방문한 버텍스 저장
+- `queue`  : 다음 번 검색에서 방문할 버텍스 저장
+
+### 2. 메인 루프
+
+- `queue`  에서 첫 번째 버텍스를 꺼내옴
+- 해당 버텍스가 `visited` 리스트에 없다면 이를 `visited` 에 추가 → 이 버텍스의 이웃 버텍스 목록을 그래프에서 불러옴
+- 불러온 이웃들을 `queue` 에 추가
+- 메인 루프 종료 → 그동안 방몬한 모든 버텍스가 담긴 `visited` 반환
+    
+    ```python
+    def bfs(graph, start):
+        visited = []
+        queue = [start]
+    
+        while queue:
+            node = queue.pop(0)
+            if node not in visited:
+                visited.append(node)
+                neighbours = graph[node]
+                for neighbour in neighbours:
+                    queue.append(neighbour)
+        return visited
+    ```
+    
+
+## 2. 깊이 우선 검색(Depth-First Search, DFS)
+
+- 개별 경로를 하나씩 끝까지 탐색 → 선택한 경로의 끝에 도달하면 DFS는 그 과정에서 방문한 모든 버텍스들을 방문 완료 처리
