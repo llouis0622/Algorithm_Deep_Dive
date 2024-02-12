@@ -290,3 +290,173 @@ print(accuracy, recall, precision)
 
 - 결정 트리 : 정확도, 재현율 우수
 - SVM, 나이브 베이즈 : 정밀도 우수
+
+# 3. 회귀 알고리즘 이해하기
+
+## 1. 회귀 문제 소개
+
+- 데이터 준비가 끝나면 이를 이용해 세 가지 회귀 알고리즘을 모두 사용 가능
+- 문제를 푸는 데 사용한 세 가지 회귀 알고리즘의 성능 비교 가능
+
+### 1. 데이터 파이프라인을 이용한 특성 엔지니어링
+
+- 데이터셋 불러오기
+
+    ```python
+    dataset = pd.read_csv("auto.csv")
+    ```
+
+- 데이터 일부를 출력하여 확인
+
+    ```python
+    dataset.head(5)
+    ```
+
+- 특성 선별 단계
+
+    ```python
+    dataset = dataset.drop(columns=['NAME'])
+    ```
+
+- 모든 입력 변수를 숫자로 변환하고 null값을 0으로 채워둠
+
+    ```python
+    dataset = dataset.drop(columns=['NAME'])
+    dataset = dataset.apply(pd.to_numeric, errors='corece')
+    dataset.fillna(0, inplace=True)
+    ```
+
+- 데이터를 훈련 데이터와 테스트 데이터로 나눔
+  - `X_train` : 훈련 데이터셋의 특성
+  - `X_test` : 테스트 데이터셋의 특성
+  - `y_train` : 훈련 데이터셋의 라벨
+  - `y_test` : 테스트 데이터셋의 라벨
+
+    ```python
+    from sklearn.model_selection import train_test_split
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+    ```
+
+
+## 2. 선형 회귀 알고리즘
+
+### 1. 단순한 선형 회귀 이해하기
+
+- 단일 연속형 특성(독립 변수)과 단일 연속형 타깃 변수(종속 변수) 사이의 관계 표현
+- 선형 회귀에서 입력 변수와 타깃 변수는 반드시 수치형
+
+### 2. 회귀 모델 평가하기
+
+- 평균 제곱근 오차(Root Mean Square Error, RMSE) : 모델이 가진 오차의 표준 편차를 수학적으로 계산
+
+### 3. 다중 회귀 이해하기
+
+- 늘어난 예측 변수에 따라 베타 계수를 더 많이 보유
+
+### 4. 회귀 문제에 선형 회귀 알고리즘 적용하기
+
+```python
+from sklearn.linear_model import LinearRegression
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+y_pred = regressor.predict(X_test)
+
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+
+sqrt(mean_squared_error(y_test, y_pred))
+```
+
+### 5. 선형 회귀 활용 분야
+
+- 매출 예측하기
+- 최적의 제품 가격 예측하기
+- 의약품 임상 평가
+- 엔지니어링 안전성 테스트처럼 원인과 결과 사이의 인과 관계를 정량화하기
+- 보험 청구 비용, 자연재해 피해액, 선겨 결과, 범죄율 등 주어진 정보를 바탕으로 미래의 결과를 예측하기
+
+### 6. 선형 회귀의 약점
+
+- 수치형 특성만 사용 가능
+- 카테고리형 데이터는 전처리 필요
+- 결측치를 유연하게 다루지 못함
+- 데이터에 대한 가정 사용
+
+## 3. 회귀 트리 알고리즘
+
+- 타깃 변수가 카테고리형이 아닌 연속형 변수라는 점만 제외하면 분류 트리 알고리즘과 비슷
+
+### 1. 회귀 문제에 회귀 트리 알고리즘 적용하기
+
+```python
+from sklearn.tree import DecisionTreeRegressor
+
+regressor = DecisionTreeRegressor(max_depth=3)
+regressor.fit(X_train, y_train)
+
+y_pred = regressor.predict(X_test)
+
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+
+sqrt(mean_squared_error(y_test, y_pred))
+```
+
+## 4. 그레이디언트 부스팅 회귀 알고리즘
+
+### 1. 회귀 문제에 그레이디언트 부스팅 회귀 알고리즘 적용하기
+
+```python
+from sklearn import ensemble
+
+params = {'n_estimators':500, 'max_depth':4, 'min_samples_split':2, 'learning_rate':0.01, 'loss':'ls'}
+regressor = ensemble.GradientBoostingRegressor(**params)
+regressor.fit(X_train, y_train)
+
+y_pred = regressor.predict(X_test)
+
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+
+sqrt(mean_squared_error(y_test, y_pred))
+```
+
+## 5. 회귀 알고리즘 비교하기
+
+- 그레이디언트 부스팅 알고리즘 : 가장 낮은 RMSE 기록
+- 선형 회귀 : 성능 우수
+
+# 4. 활용 사례 - 날씨 예측하기
+
+```python
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv("weather.csv")
+
+df.columns
+
+df.iloc[:, 0:12].head()
+
+x = df.drop(['Date', 'RainTomorrow'], axis=1)
+y = df['RainTomorrow']
+
+from sklearn.model_selection import train_test_split
+
+train_x, train_y, test_x, test_y = train_test_split(x, y, test_size=0.2, random_state=2)
+
+model = LogisticRegression()
+
+model.fit(train_x, train_y)
+
+predict = model.predict(test_x)
+
+predict = model.predict(train_y)
+
+from sklearn.metrics import accuracy_score
+
+accuracy_score(predict, test_y)
+```
