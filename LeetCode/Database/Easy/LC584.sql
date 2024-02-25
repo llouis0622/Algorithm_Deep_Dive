@@ -1,0 +1,7 @@
+SELECT NAME
+FROM CUSTOMER
+WHERE REFEREE_ID != '2' OR REFEREE_ID IS NULL;
+
+/*
+아이디 2로 고객이 추천하지 않은 고객의 이름 반환
+*/

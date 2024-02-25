@@ -1,0 +1,7 @@
+SELECT CLASS
+FROM COURSES
+GROUP BY CLASS
+HAVING COUNT(STUDENT) >= 5;
+/*
+학생이 5명 이상인 모든 수업 반환
+*/
