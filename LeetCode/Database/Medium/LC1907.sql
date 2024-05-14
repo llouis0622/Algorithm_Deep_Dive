@@ -1,0 +1,15 @@
+SELECT "High Salary" AS category, COUNT(INCOME) AS accounts_count
+FROM ACCOUNTS
+WHERE INCOME > 50000
+
+UNION
+
+SELECT "Low Salary" AS category, COUNT(INCOME) AS accounts_count
+FROM ACCOUNTS
+WHERE INCOME < 20000
+
+UNION
+
+SELECT "Average Salary" AS category, COUNT(INCOME) AS accounts_count
+FROM ACCOUNTS
+WHERE INCOME >= 20000 AND INCOME <= 50000;
