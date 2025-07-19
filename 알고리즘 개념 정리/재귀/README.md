@@ -46,3 +46,200 @@
 - 점화식 확인 - 큰 문제 → 작은 문제로 쪼갤 수 있는지 & 결과를 어떻게 결합할지
 - 호출 흐름 디버깅 - 작은 입력으로 흐름 확인 & 예상과 다르면 점화식부터 의심
 - 스택 깊이 한계 고려 - 필요시 sys.setrecursionlimit() 사용
+
+## 3️⃣ 수업 코드
+
+### BOJ1629: 곱셈
+
+```python
+def fast_pow(a, b, c, depth=0):
+    indent = '  ' * depth
+    if b == 1:
+        print(f"{indent}기저 조건 도달 : {a}^{b} mod {c} = {a % c}")
+        return a % c
+    print(f"{indent}{a}^{b} mod {c} 계산 중... b = {b} -> b // 2 = {b // 2}")
+    half = fast_pow(a, b // 2, c, depth + 1)
+    if b % 2 == 0:
+        result = (half * half) % c
+        print(f"{indent}b가 짝수 → {half} * {half} mod {c} = {result}")
+    else:
+        result = (half * half * a) % c
+        print(f"{indent}b가 홀수 → {half} * {half} * {a} mod {c} = {result}")
+    return result
+
+a, b, c = map(int, input("a, b, c를 공백으로 입력하세요 : ").split())
+print(f"\n최종 결과 : {a}^{b} mod {c} = {fast_pow(a, b, c)}")
+```
+
+```python
+def fast_pow(a, b, c):
+    if b == 1:
+        return a % c
+    num = fast_pow(a, b // 2, c)
+    if b % 2 == 0:
+        return (num * num) % c
+    else:
+        return (num * num * a) % c
+
+a, b, c = map(int, input().split())
+print(fast_pow(a, b, c))
+```
+
+```java
+import java.util.Scanner;
+
+public class Main {
+    static long fastPow(long a, long b, long c) {
+        if (b == 1) return a % c;
+
+        long num = fastPow(a, b / 2, c);
+
+        if (b % 2 == 0) return (num * num) % c;
+        else return (num * num % c) * a % c;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        long a = sc.nextLong();
+        long b = sc.nextLong();
+        long c = sc.nextLong();
+
+        System.out.println(fastPow(a, b, c));
+    }
+}
+```
+
+### BOJ11729: 하노이 탑 이동 순서
+
+```python
+def hanoi(a, b, n, depth=0):
+    indent = '  ' * depth
+    if n == 1:
+        print(f"{indent}원판 1을 {a}번 기둥에서 {b}번 기둥으로 이동")
+        return
+    print(f"{indent}{n}개의 원판을 {a}번에서 {b}번으로 옮기기 시작 (보조: {6 - a - b})")
+    hanoi(a, 6 - a - b, n - 1, depth + 1)
+    print(f"{indent}원판 {n}을 {a}번 기둥에서 {b}번 기둥으로 이동")
+    hanoi(6 - a - b, b, n - 1, depth + 1)
+    print(f"{indent}{n}개의 원판을 {a}번에서 {b}번으로 옮기기 완료")
+
+n = int(input("옮길 원판의 수를 입력하세요 : "))
+print(f"총 이동 횟수 : {(1 << n) - 1}")
+hanoi(1, 3, n)
+```
+
+```python
+def hanoi(a, b, n):
+    if n == 1:
+        print(a, b)
+        return
+    hanoi(a, 6 - a - b, n - 1)
+    print(a, b)
+    hanoi(6 - a - b, b, n - 1)
+
+n = int(input())
+print((1 << n) - 1)
+hanoi(1, 3, n)
+```
+
+```java
+import java.util.Scanner;
+
+public class Main {
+    static StringBuilder sb = new StringBuilder();
+
+    static void hanoi(int a, int b, int n) {
+        if (n == 1) {
+            sb.append(a).append(" ").append(b).append("\n");
+            return;
+        }
+        
+        hanoi(a, 6 - a - b, n - 1);
+        sb.append(a).append(" ").append(b).append("\n");
+        hanoi(6 - a - b, b, n - 1);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        int n = sc.nextInt();
+        
+        sb.append((1 << n) - 1).append("\n");
+        hanoi(1, 3, n);
+        System.out.print(sb);
+    }
+}
+```
+
+### BOJ1074: Z
+
+```python
+def func(n, r, c, depth=0):
+    indent = '  ' * depth
+    if n == 0:
+        print(f"{indent}기저 도달 : n=0, (r={r}, c={c}) → 0")
+        return 0
+    num = 1 << (n - 1)
+    size = num * num
+    print(f"{indent}n={n}, (r={r}, c={c}), num={num}")
+    if r < num and c < num:
+        print(f"{indent}↳ 1사분면 : 좌상단")
+        return func(n - 1, r, c, depth + 1)
+    elif r < num and c >= num:
+        print(f"{indent}↳ 2사분면 : 우상단, 누적 {size}")
+        return size + func(n - 1, r, c - num, depth + 1)
+    elif r >= num and c < num:
+        print(f"{indent}↳ 3사분면 : 좌하단, 누적 {2 * size}")
+        return 2 * size + func(n - 1, r - num, c, depth + 1)
+    else:
+        print(f"{indent}↳ 4사분면 : 우하단, 누적 {3 * size}")
+        return 3 * size + func(n - 1, r - num, c - num, depth + 1)
+
+N, r, c = map(int, input("N r c를 입력하세요 : ").split())
+print(f"\nZ 순서 번호 : {func(N, r, c)}")
+```
+
+```python
+def func(n, r, c):
+    if n == 0:
+        return 0
+    half = 1 << (n - 1)
+    if r < half and c < half:
+        return func(n - 1, r, c)
+    elif r < half and c >= half:
+        return half * half + func(n - 1, r, c - half)
+    elif r >= half and c < half:
+        return 2 * half * half + func(n - 1, r - half, c)
+    else:
+        return 3 * half * half + func(n - 1, r - half, c - half)
+
+N, r, c = map(int, input().split())
+print(func(N, r, c))
+```
+
+```java
+import java.util.Scanner;
+
+public class Main {
+    static int func(int n, int r, int c) {
+        if (n == 0) return 0;
+        int half = 1 << (n - 1);
+
+        if (r < half && c < half) return func(n - 1, r, c);
+        else if (r < half && c >= half) return half * half + func(n - 1, r, c - half);
+        else if (r >= half && c < half) return 2 * half * half + func(n - 1, r - half, c);
+        else return 3 * half * half + func(n - 1, r - half, c - half);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        int n = sc.nextInt();
+        int r = sc.nextInt();
+        int c = sc.nextInt();
+        
+        System.out.println(func(n, r, c));
+    }
+}
+```
