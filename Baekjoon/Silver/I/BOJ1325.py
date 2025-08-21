@@ -1,37 +1,31 @@
 import sys
 from collections import deque
 
-input = sys.stdin.readline
-N, M = map(int, input().split())
-A = [[] for _ in range(N + 1)]
-answer = [0] * (N + 1)
-
-
-def BFS(v):
-    visited = [False] * (N + 1)
-    queue = deque()
-    queue.append(v)
-    visited[v] = True
-
-    while queue:
-        now_Node = queue.popleft()
-
-        for i in A[now_Node]:
-            if not visited[i]:
-                visited[i] = True
-                answer[i] += 1
-                queue.append(i)
-
-
-for i in range(M):
-    S, E = map(int, input().split())
-    A[S].append(E)
-
-for i in range(1, N + 1):
-    BFS(i)
-
-maxVal = max(answer)
-
-for i in range(1, N + 1):
-    if maxVal == answer[i]:
-        print(i, end=' ')
+input = iter(sys.stdin.buffer.read().split())
+n = int(next(input))
+m = int(next(input))
+g = [[] for _ in range(n + 1)]
+for _ in range(m):
+    a = int(next(input))
+    b = int(next(input))
+    g[b].append(a)
+visited = [0] * (n + 1)
+mark = 0
+cnt = [0] * (n + 1)
+dq = deque()
+for s in range(1, n + 1):
+    mark += 1
+    visited[s] = mark
+    dq.append(s)
+    c = 1
+    while dq:
+        x = dq.popleft()
+        for y in g[x]:
+            if visited[y] != mark:
+                visited[y] = mark
+                dq.append(y)
+                c += 1
+    cnt[s] = c
+num = max(cnt[1:])
+ans = [str(i) for i in range(1, n + 1) if cnt[i] == num]
+sys.stdout.write(" ".join(ans))
