@@ -1,0 +1,5 @@
+S = input()
+A = sum(1 for i in S if i.isupper())
+B = sum(1 for i in S if i.islower())
+print(f"UPPER CASE {A}")
+print(f"LOWER CASE {B}")
