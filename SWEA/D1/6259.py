@@ -1,0 +1,5 @@
+S = input()
+A = sum(1 for i in S if i.isalpha())
+N = sum(1 for i in S if i.isdigit())
+print(f"LETTERS {A}")
+print(f"DIGITS {N}")
